@@ -10,7 +10,7 @@ class UtilsSpecs extends FreeSpec
       val config = ConfigFactory.load("tobereplaced_application.conf")
       val configPath = "foo.bar.this"
       val newValue = "new value"
-      val configToMerge = ConfigFactory.parseString(s"""{"foo":{"bar"{"this":{$newValue}}}}""")
+      val configToMerge = ConfigFactory.parseString(s"""{"foo":{"bar"{"this":"$newValue"}}}""")
 
       val newConfig = replaceConfigField(config, configPath, configToMerge)
 
