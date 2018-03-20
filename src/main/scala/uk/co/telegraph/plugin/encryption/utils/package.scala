@@ -4,6 +4,7 @@ import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.Base64
 
+import com.amazonaws.services.kms.AWSKMSClientBuilder
 import com.typesafe.config.{Config, ConfigRenderOptions}
 
 import scala.util.{Success, Try}
@@ -11,6 +12,7 @@ import scala.util.{Success, Try}
 package object utils {
   final val IsEncrypted = "isEncrypted"
   final val EncryptedConfigField = "cipherConf"
+  val awsClient = AWSKMSClientBuilder.standard().withRegion("eu-west-1").build()
   private[utils] def replaceConfigField(config: Config, configPath: String, configBlock: Config): Config = {
     Try(configBlock.withFallback(config)) match {
       case Success(config) => config
@@ -18,7 +20,7 @@ package object utils {
     }
   }
   private[utils] def getConfigPlainText(config: Config, configPath: String): String = {
-    Try{config.getObject(configPath).render(ConfigRenderOptions.concise())} match {
+    Try(config.getObject(configPath).render(ConfigRenderOptions.concise())) match {
       case Success(plainText) => plainText
       case _ => throw new Exception(s"Path $configPath is not a valid configuration block.")
     }

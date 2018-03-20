@@ -2,7 +2,7 @@ package uk.co.telegraph.plugin.encryption.utils
 
 import java.nio.ByteBuffer
 
-import com.amazonaws.services.kms.{AWSKMS, AWSKMSClientBuilder}
+import com.amazonaws.services.kms.AWSKMS
 import com.amazonaws.services.kms.model.{DecryptRequest, EncryptRequest}
 import com.typesafe.config.{Config, ConfigFactory}
 
@@ -33,15 +33,12 @@ class AWSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
       val decryptRequest = new DecryptRequest()
         .withCiphertextBlob(cipherTextBlob)
       val plainText = base64Decode(awskms.decrypt(decryptRequest).getPlaintext())
-//      val configPathArray = configPath.split('.')
-//      val configPathExceptField = configPathArray.dropRight(1).mkString(".")
-//      val field = configPathArray.last
       ConfigFactory.parseString(s"""{$configPath: $plainText}""")
     })
   }
 }
 
 object ConfigEncryptor {
-  def apply(region: String = "eu-west-1"): ConfigEncryptor =
-    new AWSConfigEncryptor(AWSKMSClientBuilder.standard().withRegion(region).build())
+  def apply(): ConfigEncryptor =
+    new AWSConfigEncryptor(awsClient)
 }
