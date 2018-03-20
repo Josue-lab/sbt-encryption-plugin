@@ -7,7 +7,7 @@ import com.typesafe.config.Config
 
 import scala.util.{Failure, Try}
 
-trait ConfigWriter {
+object ConfigWriter {
   def writeToFile(config: Config, fileName: String): Unit ={
     val configText = config.root().render()
     Try(Files.write(Paths.get(fileName), configText.getBytes(StandardCharsets.UTF_8))) match {
@@ -16,4 +16,3 @@ trait ConfigWriter {
     }
   }
 }
-object ConfigWriter extends ConfigWriter

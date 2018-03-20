@@ -7,6 +7,7 @@ import com.amazonaws.services.kms.model.{DecryptRequest, DecryptResult, EncryptR
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FreeSpec, Matchers, OneInstancePerTest}
+import uk.co.telegraph.plugin.encryption.utils.aws.AWSConfigEncryptor
 
 class ConfigEncryptorSpecs extends FreeSpec
   with Matchers
