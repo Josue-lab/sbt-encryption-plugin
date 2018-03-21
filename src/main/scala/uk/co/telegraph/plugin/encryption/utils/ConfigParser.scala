@@ -6,12 +6,11 @@ import com.typesafe.config.{Config, ConfigFactory}
 import scala.util.{Success, Try}
 
 trait ConfigParser {
-  type ConfigPath = String
-  def encryptedConfiguration(configPath: Option[String] = None): Seq[ConfigPath]
+  def encryptedConfiguration(config: Config): Seq[ConfigPath]
 }
 
 class DefaultConfigParser extends ConfigParser {
-  private[utils] def getEncryptedConfiguration(config: Config): Seq[ConfigPath] = {
+  override def encryptedConfiguration(config: Config): Seq[ConfigPath] = {
     config.entrySet()
       .asScala
       .filter(_.getKey.endsWith(s".$IsEncrypted"))
@@ -21,12 +20,6 @@ class DefaultConfigParser extends ConfigParser {
       })
       .map(_.getKey().split('.').dropRight(1).mkString("."))
       .toList
-  }
-  override def encryptedConfiguration(configPath: Option[String] = None): Seq[ConfigPath] = {
-    configPath match {
-      case None => getEncryptedConfiguration(ConfigFactory.load())
-      case Some(c) => getEncryptedConfiguration(ConfigFactory.load(c))
-    }
   }
 }
 

@@ -7,7 +7,7 @@ import com.amazonaws.services.kms.model.{DecryptRequest, EncryptRequest}
 import com.typesafe.config.{Config, ConfigFactory}
 import uk.co.telegraph.plugin.encryption.utils._
 
-class AWSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
+class KMSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
   type EncDecOperation = (ByteBuffer) => Config
   private def configEncDecOps(config: Config, configPath: String, op: EncDecOperation): Config = {
     val plainText = getConfigPlainText(config, configPath)
@@ -33,3 +33,4 @@ class AWSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
     })
   }
 }
+object KMSConfigEncryptor extends KMSConfigEncryptor(awsClient)

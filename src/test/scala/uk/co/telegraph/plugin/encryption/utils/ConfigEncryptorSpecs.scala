@@ -7,7 +7,7 @@ import com.amazonaws.services.kms.model.{DecryptRequest, DecryptResult, EncryptR
 import com.typesafe.config.ConfigFactory
 import org.scalamock.scalatest.MockFactory
 import org.scalatest.{FreeSpec, Matchers, OneInstancePerTest}
-import uk.co.telegraph.plugin.encryption.utils.aws.AWSConfigEncryptor
+import uk.co.telegraph.plugin.encryption.utils.aws.KMSConfigEncryptor
 
 class ConfigEncryptorSpecs extends FreeSpec
   with Matchers
@@ -30,7 +30,7 @@ class ConfigEncryptorSpecs extends FreeSpec
     (awsKmsClientMock.decrypt(_: DecryptRequest)).expects(*).returning(decryptResult).anyNumberOfTimes()
     (awsKmsClientMock.encrypt(_: EncryptRequest)).expects(*).returning(encryptResult).anyNumberOfTimes()
 
-    val configEncrypter = new AWSConfigEncryptor(awsKmsClientMock)
+    val configEncrypter = new KMSConfigEncryptor(awsKmsClientMock)
     "when encrypting with given key, it should return the expected configuration." in {
       val newConfig = configEncrypter.encrypt(config, configPath, key)
 

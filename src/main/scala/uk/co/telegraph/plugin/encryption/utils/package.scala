@@ -5,14 +5,21 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 import com.amazonaws.services.kms.AWSKMSClientBuilder
-import com.typesafe.config.{Config, ConfigRenderOptions}
+import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions}
 
 import scala.util.{Success, Try}
 
 package object utils {
+  type ConfigPath = String
   final val IsEncrypted = "isEncrypted"
   final val EncryptedConfigField = "cipherConf"
-  val awsClient = AWSKMSClientBuilder.standard().withRegion("eu-west-1").build()
+  val awsClient = AWSKMSClientBuilder.standard().build()
+  def getConfig(configPath: Option[String] = None): Config = {
+    configPath match {
+      case None => ConfigFactory.load()
+      case Some(c) => ConfigFactory.load(c)
+    }
+  }
   private[utils] def replaceConfigField(config: Config, configPath: String, configBlock: Config): Config = {
     Try(configBlock.withFallback(config)) match {
       case Success(config) => config
