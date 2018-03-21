@@ -25,8 +25,7 @@ trait EncryptionKeys {
         println(
           s"""Key: $key
               |File: $configFile
-              |Destination: $destination
-           """.stripMargin)
+              |Destination: $destination""".stripMargin)
         EncryptTask(key, configFile, destination, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       },
       decrypt := {

@@ -29,8 +29,8 @@ object KMSInterpreter extends Interpreter {
             }
           case WriteConfig(config: Config, configFile: String) =>
             State { state =>
-              ConfigWriter.writeToFile(config, configFile)
               log.info(s"Writting config to '$configFile' ")
+              ConfigWriter.writeToFile(config, configFile)
               (state, ().asInstanceOf[A])
             }
           case Encrypt(config: Config, configPaths: Seq[ConfigPath], key: String) =>
