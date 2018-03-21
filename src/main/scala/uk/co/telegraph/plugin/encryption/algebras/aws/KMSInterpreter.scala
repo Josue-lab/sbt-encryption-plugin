@@ -17,7 +17,7 @@ object KMSInterpreter extends Interpreter {
           case GetConfig(configPath) => {
             State { state =>
               val config = getConfig(configPath)
-              (state.copy(config = config), config.asInstanceOf[A])
+              (state.copy(config = Some(config)), config.asInstanceOf[A])
             }
           }
           case GetConfigPaths(config: Config) =>
@@ -38,7 +38,7 @@ object KMSInterpreter extends Interpreter {
                 log.info(s"Encrypting '$configPath'")
                 KMSConfigEncryptor.encrypt(config, configPath, key)
               }).last
-              (state.copy(config = encryptedConfig), config.asInstanceOf[A])
+              (state.copy(config = Some(encryptedConfig)), config.asInstanceOf[A])
             }
           case Decrypt(config: Config, configPaths: Seq[ConfigPath], key: String) =>
             State { state =>
@@ -46,7 +46,7 @@ object KMSInterpreter extends Interpreter {
                 log.info(s"Decrypting '$configPath'")
                 KMSConfigEncryptor.decrypt(config, configPath, key)
               }).last
-              (state.copy(config = decryptedConfig), config.asInstanceOf[A])
+              (state.copy(config = Some(decryptedConfig)), config.asInstanceOf[A])
             }
         }
       }

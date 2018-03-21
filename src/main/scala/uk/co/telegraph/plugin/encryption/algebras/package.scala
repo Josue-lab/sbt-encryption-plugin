@@ -13,7 +13,7 @@ package object algebras {
   final case class Encrypt(config: Config, configPaths: Seq[ConfigPath], key: String) extends Op[Config]
   final case class Decrypt(config: Config, configPath: Seq[ConfigPath], key: String) extends Op[Config]
 
-  final case class EncryptionData(config: Config, configPaths: Seq[ConfigPath], key: String)
+  final case class EncryptionData(config: Option[Config], configPaths: Seq[ConfigPath], key: String)
   type EncryptionState[A] = State[EncryptionData, A]
   type OpT[M[_], A] = FreeT[Op, M, A]
 
