@@ -13,17 +13,16 @@ trait EncryptionKeys {
 //  val key = "e11fd199-bf05-4dd7-b018-a3b6be63d03f"
 //  val destination = "application.conf"
   object autoImport {
-    def getArgs() = {
-      val args = spaceDelimited("<arg>").parsed
+    def getArgs(args: Seq[String]) = {
       (args(0),args(1))
     }
     lazy val encryptionSettings: Seq[Setting[_]] = Seq(
       encrypt := {
-        val (key, configFile) = getArgs
+        val (key, configFile) = getArgs(spaceDelimited("<arg>").parsed)
         EncryptTask(key, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       },
       decrypt := {
-        val (key, configFile) = getArgs
+        val (key, configFile) = getArgs(spaceDelimited("<arg>").parsed)
         DecryptTask(key, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       }
     )
