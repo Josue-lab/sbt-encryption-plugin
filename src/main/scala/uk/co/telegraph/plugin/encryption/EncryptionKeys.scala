@@ -18,12 +18,12 @@ trait EncryptionKeys {
     }
     lazy val encryptionSettings: Seq[Setting[_]] = Seq(
       encrypt := {
-        val args = spaceDelimited("<arg>").parsed
+        val args: Seq[String] = spaceDelimited("").parsed
         println(s"Args: $args")
         EncryptTask(args(0), args(1), KMSInterpreter.interpreter()(streams.value.log)).runTask()
       },
       decrypt := {
-        val (key, configFile) = getArgs(spaceDelimited("<arg>").parsed)
+        val (key, configFile) = getArgs(spaceDelimited("").parsed)
         DecryptTask(key, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       }
     )
