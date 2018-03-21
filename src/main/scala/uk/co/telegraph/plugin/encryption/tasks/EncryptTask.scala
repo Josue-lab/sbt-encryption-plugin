@@ -14,7 +14,7 @@ class EncryptTask(
       config <- EncryptionOps.getConfig(Some(configFile))
       encryptedConfigPaths <- EncryptionOps.getEncryptedConfigPaths(config)
       encryptedConfig <- EncryptionOps.encrypt(config, encryptedConfigPaths, key)
-      _ <- EncryptionOps.writeConfig(encryptedConfig, configFile)
+      _ <- EncryptionOps.writeConfig(encryptedConfig, destination)
     } yield ()
   }
 }

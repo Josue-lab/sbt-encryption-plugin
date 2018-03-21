@@ -29,8 +29,11 @@ trait EncryptionKeys {
         EncryptTask(key, configFile, destination, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       },
       decrypt := {
-        val (key, configFile) = getArgs(spaceDelimited("").parsed)
-        DecryptTask(key, configFile, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
+        val args: Seq[String] = spaceDelimited("").parsed
+        val key = args(0)
+        val configFile = args(1)
+        val destination = args(2)
+        DecryptTask(key, configFile, destination, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       }
     )
   }
