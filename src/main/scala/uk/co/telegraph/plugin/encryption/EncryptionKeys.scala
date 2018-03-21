@@ -1,16 +1,41 @@
 package uk.co.telegraph.plugin.encryption
 
+import sbt.Keys.streams
 import sbt._
-import sbt.Keys._
+import uk.co.telegraph.plugin.encryption.algebras.aws.KMSInterpreter
+import uk.co.telegraph.plugin.encryption.tasks.{DecryptTask, EncryptTask}
+import sbt.complete.Parsers.spaceDelimited
 
 trait EncryptionKeys {
+  lazy val encrypt : InputKey[Unit] = InputKey[Unit] ("encrypt", "Task used to encrypt a configuration file.")
+  lazy val decrypt : InputKey[Unit] = InputKey[Unit] ("decrypt", "Task used to decrypt a configuration file.")
 
-  lazy val configFile: SettingKey[String] = SettingKey[String] ("config-file", "Config file to encryp/decrypt.")
-  lazy val encryptKey: SettingKey[String] = SettingKey[String] ("encrypt-key", "Config file to encryp/decrypt.")
+//  val key = "e11fd199-bf05-4dd7-b018-a3b6be63d03f"
+//  val destination = "application.conf"
+  object autoImport {
+    def getArgs() = {
+      val args = spaceDelimited("<arg>").parsed
+      (args(0),args(1))
+    }
+    lazy val encryptionSettings: Seq[Setting[_]] = Seq(
+      encrypt := inputKey[Unit]("Task used to encrypt a configuration file.") { _ =>
+        val (key, configFile) = getArgs
+        EncryptTask(key, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
+      },
+      decrypt := inputKey[Unit]("Task used to decrypt a configuration file.") { _ =>
+        val (key, configFile) = getArgs
+        DecryptTask(key, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
+      }
+    )
+  }
+//
+//  val greeting = inputKey[Unit]("A demo input task.")
+//
+//  greeting := {
+//    val args: Seq[String] = spaceDelimited("<arg>").parsed
+//    args foreach println
+//  }
 
-  lazy val encrypt : TaskKey[URI] = TaskKey[URI] ("encrypt", "Task used to encrypt a configuration file.")
-  lazy val decrypt : TaskKey[URI] = TaskKey[URI] ("decrypt", "Task used to decrypt a configuration file.")
-
-  lazy val baseStackSettings: Seq[Setting[_]] = Seq(
-  )
+  import autoImport._
+  lazy val baseSettings: Seq[Setting[_]] = encryptionSettings
 }

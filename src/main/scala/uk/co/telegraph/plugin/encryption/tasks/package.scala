@@ -6,7 +6,7 @@ import uk.co.telegraph.plugin.encryption.algebras.{EncryptionData, EncryptionSta
 package object tasks {
   trait BaseTask {
     def task(): OpT[EncryptionState, Unit]
-    def interpreter: ~>[Op, EncryptionState]
+    val interpreter: ~>[Op, EncryptionState]
     def runTask(): Unit = {
       val state = task.foldMap(interpreter)
       val initialState = EncryptionData(None, Seq(), "")

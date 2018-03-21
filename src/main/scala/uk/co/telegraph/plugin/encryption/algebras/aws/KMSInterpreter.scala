@@ -10,7 +10,7 @@ import uk.co.telegraph.plugin.encryption.utils.{ConfigParser, ConfigPath, Config
 import uk.co.telegraph.plugin.encryption.utils._
 
 object KMSInterpreter extends Interpreter {
-  override def interpreter(key: String, config: Config)(implicit log: Logger): ~>[Op, EncryptionState] = {
+  override def interpreter()(implicit log: Logger): ~>[Op, EncryptionState] = {
     new (Op ~> EncryptionState) {
       def apply[A](op : Op[A]) : EncryptionState[A] = {
         op match {

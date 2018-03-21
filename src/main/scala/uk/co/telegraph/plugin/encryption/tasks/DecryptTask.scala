@@ -1,10 +1,9 @@
 package uk.co.telegraph.plugin.encryption.tasks
 
-import uk.co.telegraph.plugin.encryption.algebras.{EncryptionOps, EncryptionState, OpT}
+import cats.~>
+import uk.co.telegraph.plugin.encryption.algebras.{EncryptionOps, EncryptionState, Op, OpT}
 
-trait DecryptTask extends BaseTask {
-  val key = "asdf"
-  val destination = "application.conf"
+class DecryptTask(key: String, destination: String, val interpreter: ~>[Op, EncryptionState]) extends BaseTask {
   def task : OpT[EncryptionState, Unit] = {
     for {
       config <- EncryptionOps.getConfig(None)
@@ -13,4 +12,9 @@ trait DecryptTask extends BaseTask {
       _ <- EncryptionOps.writeConfig(decryptedConfig, destination)
     } yield ()
   }
+}
+
+object DecryptTask {
+  def apply(key: String, destination: String, interpreter: ~>[Op, EncryptionState]) =
+    new DecryptTask(key, destination, interpreter)
 }

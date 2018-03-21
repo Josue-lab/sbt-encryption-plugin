@@ -11,3 +11,5 @@ trait EncryptionConfiguration {
   lazy val DeployPreProd: Configuration = config("preprod") extend Runtime
   lazy val DeployProd   : Configuration = config("prod"   ) extend Runtime
 }
+
+object EncryptionConfiguration extends EncryptionConfiguration
