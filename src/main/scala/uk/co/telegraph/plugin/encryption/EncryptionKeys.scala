@@ -10,8 +10,6 @@ trait EncryptionKeys {
   lazy val encrypt = inputKey[Unit]("Task used to encrypt a configuration file.")
   lazy val decrypt = inputKey[Unit]("Task used to decrypt a configuration file.")
 
-//  val key = "e11fd199-bf05-4dd7-b018-a3b6be63d03f"
-//  val destination = "application.conf"
   object autoImport {
     def getArgs(args: Seq[String]) = {
       (args(0),args(1))
@@ -33,6 +31,10 @@ trait EncryptionKeys {
         val key = args(0)
         val configFile = args(1)
         val destination = args(2)
+        println(
+          s"""Key: $key
+             |File: $configFile
+             |Destination: $destination""".stripMargin)
         DecryptTask(key, configFile, destination, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       }
     )
