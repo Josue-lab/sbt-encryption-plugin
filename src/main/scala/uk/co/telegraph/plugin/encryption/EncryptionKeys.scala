@@ -7,8 +7,8 @@ import uk.co.telegraph.plugin.encryption.tasks.{DecryptTask, EncryptTask}
 import sbt.complete.Parsers.spaceDelimited
 
 trait EncryptionKeys {
-  lazy val encrypt : InputKey[Unit] = InputKey[Unit] ("encrypt", "Task used to encrypt a configuration file.")
-  lazy val decrypt : InputKey[Unit] = InputKey[Unit] ("decrypt", "Task used to decrypt a configuration file.")
+  lazy val encrypt = inputKey[Unit]("Task used to encrypt a configuration file.")
+  lazy val decrypt = inputKey[Unit]("Task used to decrypt a configuration file.")
 
 //  val key = "e11fd199-bf05-4dd7-b018-a3b6be63d03f"
 //  val destination = "application.conf"
