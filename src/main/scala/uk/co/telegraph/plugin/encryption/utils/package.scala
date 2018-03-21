@@ -1,5 +1,6 @@
 package uk.co.telegraph.plugin.encryption
 
+import java.io.File
 import java.nio.ByteBuffer
 import java.nio.charset.StandardCharsets
 import java.util.Base64
@@ -17,7 +18,10 @@ package object utils {
   def getConfig(configPath: Option[String] = None): Config = {
     configPath match {
       case None => ConfigFactory.load()
-      case Some(c) => ConfigFactory.load(c)
+      case Some(cp) => {
+        val configFile = new File(cp)
+        ConfigFactory.parseFile(configFile)
+      }
     }
   }
   private[utils] def replaceConfigField(config: Config, configPath: String, configBlock: Config): Config = {
