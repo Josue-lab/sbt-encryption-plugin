@@ -21,15 +21,17 @@ trait EncryptionKeys {
         val args: Seq[String] = spaceDelimited("").parsed
         val key = args(0)
         val configFile = args(1)
+        val destination = args(2)
         println(
           s"""Key: $key
-             |File: $configFile
+              |File: $configFile
+              |Destination: $destination
            """.stripMargin)
-        EncryptTask(key, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
+        EncryptTask(key, configFile, destination, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       },
       decrypt := {
         val (key, configFile) = getArgs(spaceDelimited("").parsed)
-        DecryptTask(key, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
+        DecryptTask(key, configFile, configFile, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       }
     )
   }
