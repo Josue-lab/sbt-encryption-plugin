@@ -16,6 +16,7 @@ object KMSInterpreter extends Interpreter {
         op match {
           case GetConfig(configPath) => {
             State { state =>
+              log.info(s"Getting config file from $configPath.")
               val config = getConfig(configPath)
               (state.copy(config = Some(config)), config.asInstanceOf[A])
             }
