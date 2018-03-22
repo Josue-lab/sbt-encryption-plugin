@@ -33,7 +33,7 @@ lock("${env.PROJECT_NAME}"){
 
         stage("Build, Test & Coverage"){
             sh """
-                ${sbtFolder}/sbt clean test
+                AWS_PROFILE=preprod ${sbtFolder}/sbt clean test
                 ${sbtFolder}/sbt package scripted
             """
         }
