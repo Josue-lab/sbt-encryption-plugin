@@ -19,7 +19,7 @@ class UtilsSpecs extends FreeSpec
     "when getting the configuration plain text, it should be the expected one" in {
       val config = ConfigFactory.load("plaintext_application.conf")
       val configPath = "here.is.some.config"
-      val expectedValue = """{"bar":"2","far":true,"foo":1}"""
+      val expectedValue = """{bar=2, far=true, foo=1}"""
 
       val configPlainText = getConfigPlainText(config, configPath)
 

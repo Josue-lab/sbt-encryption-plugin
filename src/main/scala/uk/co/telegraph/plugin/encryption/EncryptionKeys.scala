@@ -11,30 +11,13 @@ trait EncryptionKeys {
   lazy val decrypt = inputKey[Unit]("Task used to decrypt a configuration file.")
 
   object autoImport {
-    def getArgs(args: Seq[String]) = {
-      (args(0),args(1))
-    }
     lazy val encryptionSettings: Seq[Setting[_]] = Seq(
       encrypt := {
-        val args: Seq[String] = spaceDelimited("").parsed
-        val key = args(0)
-        val configFile = args(1)
-        val destination = args(2)
-        println(
-          s"""Key: $key
-              |File: $configFile
-              |Destination: $destination""".stripMargin)
+        val Seq(key, configFile, destination) = spaceDelimited("").parsed
         EncryptTask(key, configFile, destination, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       },
       decrypt := {
-        val args: Seq[String] = spaceDelimited("").parsed
-        val key = args(0)
-        val configFile = args(1)
-        val destination = args(2)
-        println(
-          s"""Key: $key
-             |File: $configFile
-             |Destination: $destination""".stripMargin)
+        val Seq(key, configFile, destination) = spaceDelimited("").parsed
         DecryptTask(key, configFile, destination, KMSInterpreter.interpreter()(streams.value.log)).runTask()
       }
     )

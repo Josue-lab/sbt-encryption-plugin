@@ -6,8 +6,9 @@ import java.nio.charset.StandardCharsets
 import java.util.Base64
 
 import com.amazonaws.services.kms.AWSKMSClientBuilder
-import com.typesafe.config.{Config, ConfigFactory, ConfigRenderOptions}
+import com.typesafe.config._
 
+import scala.collection.JavaConverters._
 import scala.util.{Success, Try}
 
 package object utils {
@@ -25,13 +26,21 @@ package object utils {
     }
   }
   private[utils] def replaceConfigField(config: Config, configPath: String, configBlock: Config): Config = {
-    Try(configBlock.withFallback(config)) match {
+    Try {
+      val configNoEncBlock = config.withValue(configPath, ConfigValueFactory.fromMap(Map.empty[String, String].asJava))
+      configBlock.withFallback(configNoEncBlock)
+    } match {
       case Success(config) => config
       case _ => throw new Exception(s"Error trying to replace '$configPath' configuration.")
     }
   }
   private[utils] def getConfigPlainText(config: Config, configPath: String): String = {
-    Try(config.getObject(configPath).render(ConfigRenderOptions.concise())) match {
+    Try {
+      config.getAnyRef(configPath) match {
+        case c: ConfigObject => c.render(ConfigRenderOptions.concise())
+        case any: AnyRef => any.toString
+      }
+    } match {
       case Success(plainText) => plainText
       case _ => throw new Exception(s"Path $configPath is not a valid configuration block.")
     }
@@ -39,7 +48,7 @@ package object utils {
   def base64Encode(byteBuffer: ByteBuffer): String = {
     new String(Base64.getEncoder().encode(byteBuffer).array(), StandardCharsets.UTF_8)
   }
-  def base64Decode(byteBuffer: ByteBuffer): String = {
-    new String(Base64.getDecoder().decode(byteBuffer).array(), StandardCharsets.UTF_8)
+  def base64Decode(byteBuffer: ByteBuffer): ByteBuffer = {
+    Base64.getDecoder().decode(byteBuffer)
   }
 }

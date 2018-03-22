@@ -25,10 +25,10 @@ class KMSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
   }
 
   override def decrypt(config: Config, configPath: String, key: String): Config = {
-    configEncDecOps(config, configPath, (cipherTextBlob: ByteBuffer) => {
+    configEncDecOps(config, s"$configPath.$EncryptedConfigField", (cipherTextBlob: ByteBuffer) => {
       val decryptRequest = new DecryptRequest()
-        .withCiphertextBlob(cipherTextBlob)
-      val plainText = base64Decode(awskms.decrypt(decryptRequest).getPlaintext())
+        .withCiphertextBlob(base64Decode(cipherTextBlob))
+      val plainText = new String(awskms.decrypt(decryptRequest).getPlaintext().array(), "UTF-8")
       ConfigFactory.parseString(s"""{$configPath: $plainText}""")
     })
   }

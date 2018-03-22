@@ -15,13 +15,11 @@ class ConfigEncryptorSpecs extends FreeSpec
   with OneInstancePerTest
 {
   "Given the ConfigEncryptor " - {
-    val config = ConfigFactory.load("secret_application")
     val configPath = "foo"
-    val key = "BFDCD9273019F2693E33B2049DF6A0672662FE8D8882B8092957B525CCD2311A"
+    val key = "(*&(&F(*SUH(UNGS(UKIUYSGI"
     val plainText = "plain text"
     val plainTextBlob = ByteBuffer.wrap(plainText.getBytes())
-    val base64PlainTextBlob = ByteBuffer.wrap(base64Encode(plainTextBlob).getBytes())
-    val decryptResult = new DecryptResult().withPlaintext(base64PlainTextBlob)
+    val decryptResult = new DecryptResult().withPlaintext(plainTextBlob)
     val encryptedValue = "lookhowencryptedthisisomg"
     val encryptedValueBlob = ByteBuffer.wrap(encryptedValue.getBytes())
     val encryptResult = new EncryptResult().withCiphertextBlob(encryptedValueBlob)
@@ -32,11 +30,13 @@ class ConfigEncryptorSpecs extends FreeSpec
 
     val configEncrypter = new KMSConfigEncryptor(awsKmsClientMock)
     "when encrypting with given key, it should return the expected configuration." in {
+      val config = ConfigFactory.load("secret_application")
       val newConfig = configEncrypter.encrypt(config, configPath, key)
 
       newConfig.getString(s"$configPath.$EncryptedConfigField") shouldBe base64Encode(ByteBuffer.wrap(encryptedValue.getBytes))
     }
     "when decrypting with given key, it should return the expected configuration." in {
+      val config = ConfigFactory.load("secret_todec_application.conf")
       val newConfig = configEncrypter.decrypt(config, configPath, key)
 
       newConfig.getString(configPath) shouldBe plainText
