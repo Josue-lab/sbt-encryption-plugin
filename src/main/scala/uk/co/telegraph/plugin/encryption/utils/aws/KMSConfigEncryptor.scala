@@ -24,7 +24,7 @@ class KMSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
     })
   }
 
-  override def decrypt(config: Config, configPath: String, key: String): Config = {
+  override def decrypt(config: Config, configPath: String): Config = {
     configEncDecOps(config, s"$configPath.$EncryptedConfigField", (cipherTextBlob: ByteBuffer) => {
       val decryptRequest = new DecryptRequest()
         .withCiphertextBlob(base64Decode(cipherTextBlob))

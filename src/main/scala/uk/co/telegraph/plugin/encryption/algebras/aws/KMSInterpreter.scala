@@ -41,11 +41,11 @@ object KMSInterpreter extends Interpreter {
               }).last
               (state.copy(config = Some(encryptedConfig)), encryptedConfig.asInstanceOf[A])
             }
-          case Decrypt(config: Config, configPaths: Seq[ConfigPath], key: String) =>
+          case Decrypt(config: Config, configPaths: Seq[ConfigPath]) =>
             State { state =>
               val decryptedConfig = configPaths.map(configPath => {
                 log.info(s"Decrypting '$configPath'")
-                KMSConfigEncryptor.decrypt(config, configPath, key)
+                KMSConfigEncryptor.decrypt(config, configPath)
               }).last
               (state.copy(config = Some(decryptedConfig)), decryptedConfig.asInstanceOf[A])
             }

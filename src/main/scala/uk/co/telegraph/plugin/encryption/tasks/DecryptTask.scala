@@ -4,7 +4,6 @@ import cats.~>
 import uk.co.telegraph.plugin.encryption.algebras.{EncryptionOps, EncryptionState, Op, OpT}
 
 class DecryptTask(
-  key: String,
   configFile: String,
   destination: String,
   val interpreter: ~>[Op, EncryptionState]
@@ -13,13 +12,13 @@ class DecryptTask(
     for {
       config <- EncryptionOps.getConfig(Some(configFile))
       encryptedConfigPaths <- EncryptionOps.getEncryptedConfigPaths(config)
-      decryptedConfig <- EncryptionOps.decrypt(config, encryptedConfigPaths, key)
+      decryptedConfig <- EncryptionOps.decrypt(config, encryptedConfigPaths)
       _ <- EncryptionOps.writeConfig(decryptedConfig, destination)
     } yield ()
   }
 }
 
 object DecryptTask {
-  def apply(key: String, configFile: String, destination: String, interpreter: ~>[Op, EncryptionState]) =
-    new DecryptTask(key, configFile, destination, interpreter)
+  def apply(configFile: String, destination: String, interpreter: ~>[Op, EncryptionState]) =
+    new DecryptTask(configFile, destination, interpreter)
 }

@@ -37,7 +37,7 @@ class ConfigEncryptorSpecs extends FreeSpec
     }
     "when decrypting with given key, it should return the expected configuration." in {
       val config = ConfigFactory.load("secret_todec_application.conf")
-      val newConfig = configEncrypter.decrypt(config, configPath, key)
+      val newConfig = configEncrypter.decrypt(config, configPath)
 
       newConfig.getString(configPath) shouldBe plainText
     }

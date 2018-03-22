@@ -11,7 +11,7 @@ package object algebras {
   final case class GetConfigPaths(config: Config) extends Op[Seq[ConfigPath]]
   final case class WriteConfig(config: Config, configFile: String) extends Op[Unit]
   final case class Encrypt(config: Config, configPaths: Seq[ConfigPath], key: String) extends Op[Config]
-  final case class Decrypt(config: Config, configPath: Seq[ConfigPath], key: String) extends Op[Config]
+  final case class Decrypt(config: Config, configPath: Seq[ConfigPath]) extends Op[Config]
 
   final case class EncryptionData(config: Option[Config], configPaths: Seq[ConfigPath], key: String)
   type EncryptionState[A] = State[EncryptionData, A]
@@ -26,7 +26,7 @@ package object algebras {
       FreeT.liftF[Op, EncryptionState, Unit](WriteConfig(config, configFile))
     def encrypt(config: Config, configPaths: Seq[ConfigPath], key: String) : OpT[EncryptionState, Config] =
       FreeT.liftF[Op, EncryptionState, Config](Encrypt(config, configPaths, key))
-    def decrypt(config: Config, configPaths: Seq[ConfigPath], key: String) : OpT[EncryptionState, Config] =
-      FreeT.liftF[Op, EncryptionState, Config](Decrypt(config, configPaths, key))
+    def decrypt(config: Config, configPaths: Seq[ConfigPath]) : OpT[EncryptionState, Config] =
+      FreeT.liftF[Op, EncryptionState, Config](Decrypt(config, configPaths))
   }
 }

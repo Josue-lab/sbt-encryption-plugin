@@ -13,7 +13,7 @@ class DecryptTaskSpecs extends FreeSpec
       val toDecFile = "application_todec.conf"
       val configFile = getResourceFileAbsolutePath(toDecFile)
       val destinationFile = getResourceFileAbsolutePath(encFile)
-      DecryptTask(kmsKey, configFile, destinationFile, KMSInterpreter.interpreter()(logger)).runTask()
+      DecryptTask(configFile, destinationFile, KMSInterpreter.interpreter()(logger)).runTask()
 
       val encConfig = ConfigFactory.load(encFile)
       encConfig.hasPath("foo.bar.value") shouldBe true
