@@ -35,18 +35,18 @@ object KMSInterpreter extends Interpreter {
             }
           case Encrypt(config: Config, configPaths: Seq[ConfigPath], key: String) =>
             State { state =>
-              val encryptedConfig = configPaths.map(configPath => {
+              val encryptedConfig = configPaths.foldLeft(config)((currentConfig, configPath) => {
                 log.info(s"Encrypting '$configPath'")
-                KMSConfigEncryptor.encrypt(config, configPath, key)
-              }).last
+                KMSConfigEncryptor.encrypt(currentConfig, configPath, key)
+              })
               (state.copy(config = Some(encryptedConfig)), encryptedConfig.asInstanceOf[A])
             }
           case Decrypt(config: Config, configPaths: Seq[ConfigPath]) =>
             State { state =>
-              val decryptedConfig = configPaths.map(configPath => {
+              val decryptedConfig = configPaths.foldLeft(config)((currentConfig, configPath) => {
                 log.info(s"Decrypting '$configPath'")
-                KMSConfigEncryptor.decrypt(config, configPath)
-              }).last
+                KMSConfigEncryptor.decrypt(currentConfig, configPath)
+              })
               (state.copy(config = Some(decryptedConfig)), decryptedConfig.asInstanceOf[A])
             }
         }
