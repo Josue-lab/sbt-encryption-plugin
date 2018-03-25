@@ -20,7 +20,7 @@ class KMSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
         .withPlaintext(plainTextBlob)
         .withKeyId(key)
       val cipherConf = base64Encode(awskms.encrypt(encryptRequest).getCiphertextBlob())
-      ConfigFactory.parseString(s"""{$configPath={$IsEncrypted = true, $EncryptedConfigField = "$cipherConf"}}""")
+      ConfigFactory.parseString(s"""{$configPath:{$IsEncrypted = true, $EncryptedConfigField = "$cipherConf"}}""")
     })
   }
 
@@ -29,7 +29,7 @@ class KMSConfigEncryptor(awskms: AWSKMS) extends ConfigEncryptor {
       val decryptRequest = new DecryptRequest()
         .withCiphertextBlob(base64Decode(cipherTextBlob))
       val plainText = new String(awskms.decrypt(decryptRequest).getPlaintext().array(), "UTF-8")
-      ConfigFactory.parseString(s"""{$configPath: $plainText}""")
+      ConfigFactory.parseString(s"""{$configPath = $plainText}""")
     })
   }
 }

@@ -37,8 +37,15 @@ package object utils {
   private[utils] def getConfigPlainText(config: Config, configPath: String): String = {
     Try {
       config.getAnyRef(configPath) match {
-        case c: ConfigObject => c.render(ConfigRenderOptions.concise())
-        case any: AnyRef => any.toString
+        case c: ConfigObject => {
+          c.render(ConfigRenderOptions.concise())
+        }
+        case map: java.util.HashMap[String, _] => {
+          ConfigFactory.parseMap(map).root().render(ConfigRenderOptions.concise())
+        }
+        case any: AnyRef => {
+          any.toString
+        }
       }
     } match {
       case Success(plainText) => plainText

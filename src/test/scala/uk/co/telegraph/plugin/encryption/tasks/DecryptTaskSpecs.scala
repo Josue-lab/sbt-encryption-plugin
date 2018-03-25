@@ -18,6 +18,8 @@ class DecryptTaskSpecs extends FreeSpec
       val encConfig = ConfigFactory.load(encFile)
       encConfig.hasPath("foo.bar.value") shouldBe true
       encConfig.getInt("foo.bar.value") shouldBe 1
+      encConfig.getString("foo.bar.value2") shouldBe "foo://bar"
+      encConfig.getBoolean("foo.bar.value3") shouldBe true
     }
   }
 }
