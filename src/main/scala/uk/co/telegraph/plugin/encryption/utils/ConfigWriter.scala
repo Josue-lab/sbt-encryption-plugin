@@ -3,14 +3,18 @@ package uk.co.telegraph.plugin.encryption.utils
 import java.nio.charset.StandardCharsets
 import java.nio.file.{Files, Paths, StandardOpenOption}
 
-import com.typesafe.config.Config
+import com.typesafe.config.{Config, ConfigRenderOptions}
 
 import scala.util.{Failure, Try}
 
 object ConfigWriter {
   private val openOption = Seq(StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE)
   def writeToFile(config: Config, fileName: String): Unit ={
-    val configText = config.root().render()
+    val renderOptions = ConfigRenderOptions
+      .defaults()
+      .setComments(false)
+      .setOriginComments(false)
+    val configText = config.root().render(renderOptions)
     Try{
       if(Files.notExists(Paths.get(fileName)))
         Files.createFile(Paths.get(fileName))
